@@ -22,28 +22,53 @@
 */
 
 #include <iostream>
+#include <gtest/gtest.h>
 #include "unikey.h"
-#include "unikey.cpp"
 
 #define _TOCHAR(x) (unsigned int) x
+#define _TOSTR(x) (const char *)x
 
 using namespace std;
 
+TEST (LettersCompletionTest, SingleLetters) {
+    UnikeyFilter (_TOCHAR('a'));
+    UnikeyFilter (_TOCHAR('a'));
+    EXPECT_STREQ ("â", _TOSTR(UnikeyBuf));
+    UnikeyClearBuf ();
+
+    UnikeyFilter (_TOCHAR('a'));
+    UnikeyFilter (_TOCHAR('s'));
+    EXPECT_STREQ ("á", _TOSTR(UnikeyBuf));
+    UnikeyClearBuf ();
+
+    UnikeyFilter (_TOCHAR('a'));
+    UnikeyFilter (_TOCHAR('w'));
+    EXPECT_STREQ ("ă", _TOSTR(UnikeyBuf));
+    UnikeyClearBuf ();
+
+    UnikeyFilter (_TOCHAR('o'));
+    UnikeyFilter (_TOCHAR('o'));
+    EXPECT_STREQ ("ô", _TOSTR(UnikeyBuf));
+    UnikeyClearBuf ();
+}
+
+TEST (LettersCompletionTest, LongWords) {
+    UnikeyFilter (_TOCHAR('u'));
+    UnikeyFilter (_TOCHAR('o'));
+    UnikeyFilter (_TOCHAR('n'));
+    UnikeyFilter (_TOCHAR('g'));
+    UnikeyFilter (_TOCHAR('w'));
+    UnikeyFilter (_TOCHAR(' '));
+    EXPECT_STREQ ("ương", _TOSTR(UnikeyBuf));
+    UnikeyClearBuf ();
+}
+
 int main (int argc, char *argv[])
 {
-    // The main variable is named MyKbEngine
-
     UnikeySetup ();
 
-    // UnikeyPutChar (_UINT('a'));
-    // // UnikeyPutChar (_UINT('b'));
-    // UnikeyPutChar (_UINT('a'));
-
-    UnikeyFilter (_TOCHAR('a'));
-    // UnikeyPutChar (_UINT('b'));
-    UnikeyFilter (_TOCHAR('a'));
-
-    cout << "UnikeyBuf: " << UnikeyBuf << endl;
+    testing::InitGoogleTest (&argc, argv);
+    int dummyVal = RUN_ALL_TESTS ();
 
     UnikeyCleanup ();
 

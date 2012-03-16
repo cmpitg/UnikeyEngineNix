@@ -1,10 +1,13 @@
 cmake_minimum_required (VERSION 2.6)
+project (UNIKEY_ENGINE)
 
 # Add the source directory
 add_subdirectory (src)
 
-# Add executable file for testing
-add_executable (tim_playing src/tim_playing.cpp)
+add_executable (unikey_playing test/playing.cpp)
+add_executable (unikey_test test/unikey_test.cpp)
 
+include_directories (src)
 # Of course, our executable must be linked against the unikey-engine
-target_link_libraries (tim_playing unikey-engine)
+target_link_libraries (unikey_playing unikey-engine)
+target_link_libraries (unikey_test unikey-engine gtest)

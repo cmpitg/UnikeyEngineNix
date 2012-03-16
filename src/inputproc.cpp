@@ -234,14 +234,14 @@ void SetupInputClassifierTable() {
         UkcMap[AscVnLexiList[i].asc] = ukcVn;
     }
 
-    UkcMap[(unsigned char)'j'] = ukcNonVn;
-    UkcMap[(unsigned char)'J'] = ukcNonVn;
-    UkcMap[(unsigned char)'f'] = ukcNonVn;
-    UkcMap[(unsigned char)'F'] = ukcNonVn;
-    UkcMap[(unsigned char)'w'] = ukcNonVn;
-    UkcMap[(unsigned char)'W'] = ukcNonVn;
+    UkcMap[(unsigned char) 'j'] = ukcNonVn;
+    UkcMap[(unsigned char) 'J'] = ukcNonVn;
+    UkcMap[(unsigned char) 'f'] = ukcNonVn;
+    UkcMap[(unsigned char) 'F'] = ukcNonVn;
+    UkcMap[(unsigned char) 'w'] = ukcNonVn;
+    UkcMap[(unsigned char) 'W'] = ukcNonVn;
 
-    int count = sizeof(WordBreakSyms)/sizeof(unsigned char);
+    int count = sizeof(WordBreakSyms) / sizeof(unsigned char);
     for (i = 0; i < count; i++)
         UkcMap[WordBreakSyms[i]] = ukcWordBreak;
 
@@ -264,12 +264,12 @@ void SetupInputClassifierTable() {
 }
 
 //-------------------------------------------
-void UkInputProcessor::init() {
+void UkInputProcessor::init () {
     if (!ClassifierTableInitialized) {
-        SetupInputClassifierTable();
+        SetupInputClassifierTable ();
         ClassifierTableInitialized = true;
     }
-    setIM(UkTelex);
+    setIM (UkTelex);
 }
 
 //-------------------------------------------

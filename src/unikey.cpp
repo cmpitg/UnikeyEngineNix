@@ -71,7 +71,7 @@ void UnikeySetCapsState (int shiftPressed, int CapsLockOn) {
 //--------------------------------------------
 int UnikeySetOutputCharset(int charset) {
     pShMem->charsetId = charset;
-    MyKbEngine.reset();
+    MyKbEngine.reset ();
     return 1;
 }
 
@@ -109,7 +109,7 @@ void UnikeyCheckKbCase (int *pShiftPressed, int *pCapsLockOn) {
 }
 
 //--------------------------------------------
-void UnikeySetup () {
+void UnikeySetup (void) {
     SetupUnikeyEngine ();
     pShMem = new UkSharedMem;
     pShMem->input.init ();
@@ -125,15 +125,19 @@ void UnikeySetup () {
 }
 
 //--------------------------------------------
-void UnikeyCleanup () {
+void UnikeyCleanup (void) {
     delete pShMem;
 }
 
 //--------------------------------------------
 void UnikeyFilter (unsigned int ch) {
     UnikeyBufChars = sizeof (UnikeyBuf);
+    // DEBUG
+    // cerr << "=== Processing UnikeyFilter " << (char) ch << " ===" << endl
+    //      << "Cached Size before processing: " << UnikeyBufChars << endl;
     MyKbEngine.process (ch, UnikeyBackspaces, UnikeyBuf,
                         UnikeyBufChars, UnikeyOutput);
+    // cerr << "Cached Size after processing: " << UnikeyBufChars << endl << endl;
 }
 
 //--------------------------------------------
@@ -144,17 +148,17 @@ void UnikeyPutChar (unsigned int ch) {
 }
 
 //--------------------------------------------
-void UnikeyResetBuf () {
+void UnikeyResetBuf (void) {
     MyKbEngine.reset ();
 }
 
 //--------------------------------------------
-void UnikeySetSingleMode () {
+void UnikeySetSingleMode (void) {
     MyKbEngine.setSingleMode ();
 }
 
 //--------------------------------------------
-void UnikeyBackspacePress () {
+void UnikeyBackspacePress (void) {
     UnikeyBufChars = sizeof (UnikeyBuf);
     MyKbEngine.processBackspace
     (UnikeyBackspaces, UnikeyBuf, UnikeyBufChars, UnikeyOutput);
@@ -177,12 +181,30 @@ int UnikeyLoadUserKeyMap (const char *fileName) {
 }
 
 //--------------------------------------------
-void UnikeyRestoreKeyStrokes () {
+void UnikeyRestoreKeyStrokes (void) {
     UnikeyBufChars = sizeof (UnikeyBuf);
     MyKbEngine.restoreKeyStrokes (UnikeyBackspaces, UnikeyBuf,
                                   UnikeyBufChars, UnikeyOutput);
 }
 
-bool UnikeyAtWordBeginning () {
+bool UnikeyAtWordBeginning (void) {
     return MyKbEngine.atWordBeginning();
+}
+
+void UnikeyClearBuf (void) {
+    UnikeyResetBuf ();
+    UnikeyBufChars = 0;
+    UnikeyBackspaces = 0;
+    memset (UnikeyBuf, 0, sizeof (UnikeyBuf));
+    MyKbEngine.clearBuf ();
+}
+
+void UnikeyOutputBuf (bool outputEngineBuf) {
+    if (outputEngineBuf) {
+        MyKbEngine.outputBuf ();
+    }
+    cout << "UnikeyBuf:" << endl
+         << " - Contents " << UnikeyBuf << endl
+         << " - Cached size: " << UnikeyBufChars << endl
+         << " - Real size: " << sizeof (UnikeyBuf) << endl << endl;
 }

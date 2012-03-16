@@ -70,6 +70,7 @@ public:
 
     int process (unsigned int keyCode, int & backs,
                  unsigned char *outBuf, int & outSize, UkOutputType & outType);
+
     void pass (int keyCode); //just pass through without filtering
     void setSingleMode ();
 
@@ -91,6 +92,10 @@ public:
     int processMapChar(UkKeyEvent & ev);
     int processTelexW(UkKeyEvent & ev);
     int processEscChar(UkKeyEvent & ev);
+
+    /* cmpitg */
+    void outputBuf (void);
+    void clearBuf (void);
 
 protected:
     static bool m_classInit;

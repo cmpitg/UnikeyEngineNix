@@ -1260,7 +1260,7 @@ int UkEngine::checkEscapeVIQR(UkKeyEvent & ev) {
 }
 
 //----------------------------------------------------------
-int UkEngine::processAppend(UkKeyEvent & ev) {
+int UkEngine::processAppend (UkKeyEvent & ev) {
     int ret = 0;
     switch (ev.chType) {
     case ukcReset:
@@ -1684,12 +1684,14 @@ int UkEngine::processNoSpellCheck(UkKeyEvent & ev) {
     markChange(m_current);
     return 1;
 }
-//----------------------------------------------------------
-int UkEngine::process(unsigned int keyCode, int & backs, unsigned char *outBuf, int & outSize, UkOutputType & outType) {
+
+// FIXME
+int UkEngine::process (unsigned int keyCode, int & backs, unsigned char *outBuf,
+                       int & outSize, UkOutputType & outType) {
     UkKeyEvent ev;
-    prepareBuffer();
+    prepareBuffer ();
     m_backs = 0;
-    m_changePos = m_current+1;
+    m_changePos = m_current + 1;
     m_pOutBuf = outBuf;
     m_pOutSize = &outSize;
     m_outputWritten = false;
@@ -1698,7 +1700,8 @@ int UkEngine::process(unsigned int keyCode, int & backs, unsigned char *outBuf, 
     m_keyRestoring = false;
     m_outType = UkCharOutput;
 
-    m_pCtrl->input.keyCodeToEvent(keyCode, ev);
+    // Convert keycode to Unikey key event
+    m_pCtrl->input.keyCodeToEvent (keyCode, ev);
 
     int ret;
     if (!m_toEscape) {
@@ -1709,8 +1712,8 @@ int UkEngine::process(unsigned int keyCode, int & backs, unsigned char *outBuf, 
             ret = processAppend(ev);
         } else {
             m_current--;
-            processAppend(ev);
-            markChange(m_current); //this will assign m_backs to 1 and mark the character for output
+            processAppend (ev);
+            markChange (m_current); //this will assign m_backs to 1 and mark the character for output
             ret = 1;
         }
     }
@@ -1765,7 +1768,7 @@ int UkEngine::process(unsigned int keyCode, int & backs, unsigned char *outBuf, 
 //  outSize: [in] size of buffer in bytes
 //           [out] bytes written to buffer
 //----------------------------------------------------------
-int UkEngine::writeOutput(unsigned char *outBuf, int & outSize) {
+int UkEngine::writeOutput (unsigned char *outBuf, int & outSize) {
     StdVnChar stdChar;
     int i, bytesWritten;
     int ret = 1;
@@ -1950,21 +1953,20 @@ UkEngine::UkEngine() {
     m_keyRestored = false;
 }
 
-//----------------------------------------------------
-// make sure there are at least 10 entries available
-//----------------------------------------------------
-void UkEngine::prepareBuffer() {
+
+// make sure there are at least 10 entries available in m_buffer
+void UkEngine::prepareBuffer () {
     int rid;
-    //prepare symbol buffer
+    // prepare symbol buffer
     if (m_current >= 0 && m_current + 10 >= m_bufSize) {
         // Get rid of at least half of the current entries
         // don't get rid from the middle of a word.
-        for (rid = m_current/2; m_buffer[rid].form != vnw_empty && rid < m_current; rid++);
+        for (rid = m_current / 2; m_buffer[rid].form != vnw_empty && rid < m_current; rid++);
         if (rid == m_current) {
             m_current = -1;
         } else {
             rid++;
-            memmove(m_buffer, m_buffer+rid, (m_current-rid+1)*sizeof(WordInfo));
+            memmove(m_buffer, m_buffer + rid, (m_current - rid + 1) * sizeof (WordInfo));
             m_current -= rid;
         }
     }
@@ -2168,21 +2170,21 @@ void UkEngine::setSingleMode() {
 }
 
 //--------------------------------------------------
-void SetupUnikeyEngine() {
-    SetupInputClassifierTable();
+void SetupUnikeyEngine () {
+    SetupInputClassifierTable ();
     int i;
     VnLexiName lexi;
 
-    //Calculate IsoStdVnCharMap
-    for (i=0; i < 256; i++) {
+    // Calculate IsoStdVnCharMap
+    for (i = 0; i < 256; i++) {
         IsoStdVnCharMap[i] = i;
     }
 
-    for (i=0; SpecialWesternChars[i]; i++) {
+    for (i = 0; SpecialWesternChars[i]; i++) {
         IsoStdVnCharMap[SpecialWesternChars[i]] = (vnl_lastChar + i) + VnStdCharOffset;
     }
 
-    for (i=0; i < 256; i++) {
+    for (i = 0; i < 256; i++) {
         if ((lexi = IsoToVnLexi(i)) != vnl_nonVnChar) {
             IsoStdVnCharMap[i] = lexi + VnStdCharOffset;
         }
@@ -2301,4 +2303,15 @@ bool UkEngine::lastWordHasVnMark() {
         }
     }
     return false;
+}
+
+// cmpitg
+void UkEngine::outputBuf (void) {
+    cerr << "  === Unikey Engine buffer ===" << endl
+         // << "Buffer size: " << m_bufSize << endl
+         << "  m_buffer: " << m_buffer[0].keyCode << " " << m_buffer[1].keyCode << " " << m_buffer[2].keyCode << " " << m_buffer[3].keyCode << " " << m_buffer[4].keyCode << " " << m_buffer[5].keyCode << " " << m_buffer[6].keyCode << " " << m_buffer[7].keyCode << " " << m_buffer[8].keyCode << " " << m_buffer[9].keyCode << " " << m_buffer[10].keyCode << " " << endl;
+}
+
+void UkEngine::clearBuf (void) {
+    memset (m_buffer, 0, sizeof (m_buffer));
 }

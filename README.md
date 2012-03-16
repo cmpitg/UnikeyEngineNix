@@ -28,8 +28,8 @@ See *COPYING* for more details.
 
 ## For Developers
 
-FIXME: To be updated.  For now, please view source files beginning with *tim_*
-in *src* directory for more information.
+FIXME: To be updated.  For now, please view source files in **test/**
+directory for more information.
 
 ### System requirements
 
